@@ -1,0 +1,468 @@
+/* ============================
+   モダンなすりガラスヘッダー
+   ============================ */
+.glass-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 1000;
+    
+    /* ★ここがモダンポイント：すりガラス効果 */
+    background: rgba(255, 255, 255, 0.6); /* 白色の不透明度60% */
+    backdrop-filter: blur(12px);          /* 背景をぼかす */
+    -webkit-backdrop-filter: blur(12px);  /* Safari用 */
+    
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* うっすら白い線 */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); /* ほんのり影 */
+}
+
+.header-inner {
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between; /* ロゴ・メニュー・ボタンを等間隔に */
+    align-items: center;
+}
+
+/* --- ロゴのデザイン --- */
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800; /* 極太 */
+    color: #333;
+    letter-spacing: -0.05em; /* 文字を少し詰めると今っぽくなる */
+}
+
+/* --- メニューのデザイン --- */
+.nav-menu ul {
+    display: flex;
+    gap: 40px; /* メニュー同士の間隔広めがトレンド */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-menu a {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #444;
+    position: relative; /* 下線アニメーションの基準点 */
+}
+
+/* メニューのホバーアニメーション（下線がシュッと出る） */
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #333;
+    transform: scaleX(0); /* 最初は幅0 */
+    transform-origin: center; /* 中央から伸びる */
+    transition: transform 0.3s ease;
+}
+
+.nav-menu a:hover::after {
+    transform: scaleX(1); /* ホバーで幅100% */
+}
+
+/* --- お問い合わせボタン（CTA）のデザイン --- */
+.header-cta {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 50px; /* 丸いボタン */
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.header-cta:hover {
+    background-color: #555;
+    transform: translateY(-2px); /* 少し浮く */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* --- スマホ対応（簡易版） --- */
+@media screen and (max-width: 768px) {
+    .header-inner { padding: 0 20px; }
+    .nav-menu { display: none; } /* スマホではメニューを一旦隠す */
+    .header-cta { display: none; } /* ボタンも隠す（またはアイコンにする） */
+    /* ※スマホメニューの実装は別途必要になります */
+}
+
+/* ============================
+   無限ループアニメーションの設定
+   ============================ */
+
+/* 全体のコンテナ（ヘッダーとかぶらないよう余白を調整） */
+.scroll-container {
+    padding-top: 100px; /* ヘッダーの高さ＋αの余白 */
+    overflow: hidden;   /* 画面外にはみ出した画像を隠す */
+    width: 100%;
+}
+
+/* 各行の共通設定 */
+.loop-row {
+    margin-bottom: 20px; /* 行ごとの隙間 */
+    width: 100%;
+    display: flex;
+}
+
+/* 画像を包むラッパー（これが動きます） */
+.loop-wrap {
+    display: flex;
+    /* 折り返さないようにする */
+    white-space: nowrap; 
+}
+
+/* 画像の設定 */
+.loop-wrap img {
+    width: 30vw;       /* 画面幅の30%くらいの大きさ */
+    height: 200px;     /* 高さ固定 */
+    object-fit: cover; /* 画像の比率を保ったままトリミング */
+    margin-right: 20px;/* 画像同士の隙間 */
+    border-radius: 8px;
+}
+
+
+/* --- アニメーションの定義 --- */
+
+/* 左へ動くアニメーション（通常） */
+@keyframes slideLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* 半分（1セット分）動いたら0に戻る */
+}
+
+/* 右へ動くアニメーション（逆再生） */
+@keyframes slideRight {
+    0% { transform: translateX(-50%); } /* 左にズレた状態からスタート */
+    100% { transform: translateX(0); }
+}
+
+
+/* --- クラスごとの動きの指定 --- */
+
+/* 左へ移動する行の設定 */
+.to-left .loop-wrap {
+    animation: slideLeft 30s linear infinite; 
+}
+
+/* 右へ移動する行の設定 */
+.to-right .loop-wrap {
+    animation: slideRight 30s linear infinite;
+}
+
+
+/* --- スマホ対応（画像を少し大きくする） --- */
+@media screen and (max-width: 768px) {
+    .loop-wrap img {
+        width: 60vw; /* スマホなら画面幅の60%くらい */
+        height: 150px;
+    }
+}
+
+
+/* ============================
+   ロード時にふわっと出る画像の設定
+   ============================ */
+.floating-image {
+    position: absolute;  /* 画面上の特定の位置に固定 */
+    top: 20%;         /* 上から20%の位置（少し下げる） */
+    right: 10%;       /* 右から10%の位置（少し右側） */
+    width: 300px;     /* 画像の幅（お好みで調整） */
+    height: auto;     /* 高さは自動 */
+    z-index: 500;     /* ★重要：流れている背景(z-indexなし)より手前に表示 */
+    border-radius: 12px; /* 角を少し丸くしておしゃれに */
+    /* box-shadow: 0 10px 30px rgba(0,0,0,0.3); 影をつけて浮かんでいる感を強調 */
+
+    /* アニメーションの初期状態（スタート地点） */
+    opacity: 0;               /*最初は透明で見えない */
+    transform: translateY(30px); /* 本来の位置より30px下にずらしておく */
+
+    /* アニメーションの適用 */
+    /* 名前(fadeUp) 時間(1.5秒) 加減速(easeOut) 終了後の状態を維持(forwards) */
+    animation: fadeUp 1.5s ease-out forwards;
+    
+    /* （オプション）少し待ってから表示させたい場合はコメントを外す */
+    /* animation-delay: 0.5s; */
+}
+
+/* ふわっと浮き上がる動きの定義 */
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px); /* 下からスタート */
+    }
+    100% {
+        opacity: 1;     /* 完全に表示 */
+        transform: translateY(0); /* 本来の位置に戻る */
+    }
+}
+
+/* --- スマホ対応（位置と大きさを調整） --- */
+@media screen and (max-width: 768px) {
+    .floating-image {
+        width: 200px;   /* スマホでは少し小さく */
+        top: 25%;
+        right: 5%;      /* スマホではもう少し端に寄せる */
+    }
+}
+
+/* ============================
+   Conceptページ専用（センターライン・ジグザグ配置）
+   ============================ */
+
+.page-concept {
+    background-color: #f9f9f9;
+    padding-top: 120px;
+    min-height: 100vh;
+}
+
+.concept-inner {
+    max-width: 1000px; /* 左右に広がるので少し幅を広げる */
+    margin: 0 auto;
+    padding: 0 20px 100px;
+    position: relative;
+}
+
+.concept-inner h1 {
+    text-align: center;
+    margin-bottom: 80px;
+    font-size: 2.5rem;
+    animation: fadeIn 1s ease forwards;
+}
+
+/* --- 各ステップのレイアウト（ここが重要） --- */
+.step-item {
+    position: relative; /* 基準点 */
+    display: flex;
+    justify-content: center; /* コンテンツの中央寄せ */
+    min-height: 200px; /* 1つの項目の高さ確保 */
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+/* アニメーションの遅延設定 */
+.step-item:nth-child(2) { animation-delay: 0.5s; }
+.step-item:nth-child(3) { animation-delay: 1.5s; }
+.step-item:nth-child(4) { animation-delay: 2.5s; }
+
+
+/* --- グラフィック部分（真ん中の線） --- */
+.graphic-part {
+    position: absolute; /* 自由に動けるようにする */
+    left: 50%;          /* 画面のちょうど真ん中に */
+    transform: translateX(-50%); /* ズレを補正して完全な中央へ */
+    top: 0;
+    bottom: 0;          /* 上から下まで貫く */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+    z-index: 1;
+}
+
+/* 点 */
+.dot {
+    width: 16px;
+    height: 16px;
+    background-color: #333;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    flex-shrink: 0; /* 縮まないようにする */
+}
+
+/* 線 */
+.line {
+    width: 2px;
+    background-color: #333;
+    flex-grow: 1; /* 下まで伸びる */
+    transform-origin: top;
+    transform: scaleY(0);
+}
+
+/* 矢印の先 */
+.arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 6px 0 6px;
+    border-color: #333 transparent transparent transparent;
+    opacity: 0;
+    margin-top: -1px;
+}
+
+
+/* --- テキスト部分（左右への振り分け） --- */
+.text-part {
+    width: 40%; /* 画面の半分より少し小さく */
+    padding: 10px 0;
+    position: relative;
+    z-index: 2;
+}
+
+/* 奇数番目（1, 3...）：右側に配置 */
+.step-item:nth-child(odd) .text-part {
+    margin-left: 50%;     /* 左半分を空ける */
+    padding-left: 40px;   /* 線との距離 */
+    text-align: left;     /* 左揃え */
+}
+
+/* 偶数番目（2...）：左側に配置 */
+.step-item:nth-child(even) .text-part {
+    margin-right: 50%;    /* 右半分を空ける */
+    padding-right: 40px;  /* 線との距離 */
+    text-align: right;    /* 右揃え（線に向かって文字を書く） */
+}
+
+/* --- テキスト装飾 --- */
+.text-part h2 {
+    font-size: 1.8rem;
+    margin: 0 0 15px 0;
+}
+
+.text-part p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #666;
+}
+
+
+/* --- アニメーション定義（前回と同じ） --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-item:nth-child(2) .line { animation: growLine 0.5s ease 0.8s forwards; }
+.step-item:nth-child(3) .line { animation: growLine 0.5s ease 1.8s forwards; }
+.step-item:nth-child(4) .line { animation: growLine 0.5s ease 2.8s forwards; }
+
+@keyframes growLine { to { transform: scaleY(1); } }
+
+.step-item:nth-child(2) .arrow { animation: showArrow 0.3s ease 1.3s forwards; }
+.step-item:nth-child(3) .arrow { animation: showArrow 0.3s ease 2.3s forwards; }
+.step-item:nth-child(4) .arrow { animation: showArrow 0.3s ease 3.3s forwards; }
+
+@keyframes showArrow { to { opacity: 1; } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+
+/* ============================
+   スマホ対応（ここが重要）
+   ============================ */
+@media screen and (max-width: 768px) {
+    /* 左右配置をやめて、すべて「左揃え」に戻す */
+    .step-item {
+        justify-content: flex-start; /* 左寄せ */
+    }
+
+    .graphic-part {
+        left: 20px; /* 線を左端に移動 */
+        transform: none;
+    }
+
+    .text-part {
+        width: 100%; /* 幅いっぱい */
+        margin: 0 !important; /* 強制的に余白リセット */
+        padding: 0 0 40px 60px !important; /* 左側に線の分のスペースを空ける */
+        text-align: left !important; /* 全部左揃え */
+    }
+}
+
+/* 1. 外側の箱（写真エリア）の基準点を作る */
+.photo-slider-area { /* ←実際のクラス名に変えてください */
+  position: relative; 
+}
+
+/* 2. 中の文字（Hanada...）をど真ん中に配置する */
+.hanada-section {
+  position: absolute; /* 親（写真エリア）を基準に自由に動く */
+  top: 50%;           /* 上から50%の位置 */
+  left: 50%;          /* 左から50%の位置 */
+  transform: translate(-50%, -50%); /* 自身の大きさ分だけ戻して完全な中央にする */
+  
+  z-index: 10;        /* 写真より手前に表示 */
+  width: 100%;        /* 幅を確保 */
+  text-align: center; /* 文字を真ん中揃え */
+  
+  /* 背景などの調整（お好みで） */
+  padding: 0;         /* 余白リセット */
+  background: transparent; /* 背景を透明に（写真が見えるように） */
+}
+
+/* 文字の色（写真の上でも見えるように白などに変更） */
+.hanada-inner h2 {
+  color: white;       /* 白文字 */
+  font-size: 32px;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5); /* 読みやすく影をつける */
+  margin: 0 0 10px 0;
+}
+.hanada-inner p {
+  color: white;
+  font-size: 16px;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* Worksセクション全体 */
+.works-section {
+  padding: 60px 20px;
+  background-color: #fff;
+}
+
+.works-section h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 40px;
+  letter-spacing: 0.1em;
+}
+
+/* グリッドレイアウト（箱を並べる） */
+.works-grid {
+  display: flex;
+  flex-wrap: wrap;       /* 折り返しを許可 */
+  gap: 40px;            /* アイテム間の隙間 */
+  max-width: 1000px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+/* 個々のアイテム */
+.work-item {
+  width: 100%;           /* スマホは横幅いっぱい */
+  max-width: 450px;      /* PCでも広がりすぎないように */
+  margin-bottom: 20px;
+}
+
+/* 画像エリア */
+.work-image {
+  width: 100%;
+  height: 250px;         /* 高さを統一 */
+  background-color: #eee; /* 画像がない時のグレー背景 */
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.work-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* 枠に合わせて画像を切り抜く */
+}
+
+/* テキストエリア */
+.work-text h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.work-text p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+}
