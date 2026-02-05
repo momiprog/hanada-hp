@@ -434,9 +434,21 @@
 
 /* 個々のアイテム */
 .work-item {
-  width: 100%;           /* スマホは横幅いっぱい */
-  max-width: 450px;      /* PCでも広がりすぎないように */
-  margin-bottom: 20px;
+  /* PCでは2列になるように計算（50%から隙間の分を引く） */
+  width: 45%; 
+  margin-bottom: 40px; /* 下の段との隙間 */
+}
+.work-item {
+  /* PCでは2列になるように計算（50%から隙間の分を引く） */
+  width: 45%; 
+  margin-bottom: 40px; /* 下の段との隙間 */
+}
+
+/* スマホ（画面幅が狭い時）は1列に戻す設定 */
+@media screen and (max-width: 768px) {
+  .work-item {
+    width: 100%;
+  }
 }
 
 /* 画像エリア */
@@ -465,4 +477,37 @@
   font-size: 15px;
   color: #666;
   line-height: 1.6;
+}
+
+.work-item {
+  /* --- 既存のレイアウト設定（変更なし） --- */
+  width: 45%;
+  margin-bottom: 40px;
+  
+  /* --- ★ここから追加設定 --- */
+  
+  /* 1. リンク化に伴う見た目のリセット */
+  display: block;          /* 箱として扱う */
+  text-decoration: none;   /* 下線を消す */
+  color: inherit;          /* 文字色を親(body等)に合わせる＝青文字にしない */
+  
+  /* 2. アニメーションの準備 */
+  transition: all 0.3s ease; /* 0.3秒かけて滑らかに変化させる */
+  
+  /* オプション：初期状態でも少し影をつけておくと立体感が出ます */
+  box-shadow: 0 4px 6px rgba(0,0,0, 0.1); 
+  border-radius: 8px;      /* 角を少し丸くするとモダンに見えます */
+  background-color: #fff;  /* 背景色を明示 */
+}
+
+/* --- ★ホバー時（カーソルが乗った時）の動き --- */
+.work-item:hover {
+  transform: translateY(-10px); /* 上に10px持ち上げる */
+  box-shadow: 0 10px 20px rgba(0,0,0, 0.2); /* 影を濃く・大きくして浮遊感を出す */
+  cursor: pointer; /* 指マークにする */
+}
+
+/* 画像エリアも角丸に合わせる */
+.work-image {
+  border-radius: 8px 8px 0 0; /* 上の角だけ丸くする */
 }
